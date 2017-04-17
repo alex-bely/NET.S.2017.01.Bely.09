@@ -13,6 +13,6 @@ namespace Task1
     public interface IBookStorage
     {
         List<Book> LoadBookList(NLog.Logger logger);
-        void SaveBookList(List<Book> bookList, NLog.Logger logger);
+        void SaveBookList(IEnumerable<Book> bookList, NLog.Logger logger);
     }
 }

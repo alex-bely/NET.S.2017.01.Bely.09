@@ -31,6 +31,7 @@ namespace Task1.UI
             bookListService.AddBook(book5);
             bookListService.AddBook(book6);
             bookListService.AddBook(book7);
+            
 
             //Displaying of first element of the BookListService and removing of this element
             Console.WriteLine(bookListService[1].ToString());
@@ -42,7 +43,7 @@ namespace Task1.UI
             bookListService.Save(bookListStorage);
             //Loading books from BookListStorage to another BookListService and displaying the books
             anotherBookListService.Load(bookListStorage);
-            foreach (Book temp in anotherBookListService)
+            foreach (Book temp in anotherBookListService.GetBooks())
                 Console.WriteLine(temp.ToString()+"\n");
 
            
@@ -50,7 +51,7 @@ namespace Task1.UI
             Console.WriteLine("****************SortedByAuthorList****************");
             IComparer<Book> authorComparer = new BookEqualityByAuthor();
             anotherBookListService.SortBooksByTag(authorComparer);
-            foreach (Book temp in anotherBookListService)
+            foreach (Book temp in anotherBookListService.GetBooks())
                 Console.WriteLine(temp.ToString()+ "\n");
 
 
@@ -59,7 +60,7 @@ namespace Task1.UI
             Console.WriteLine("****************SortedByNumberOfPages****************");
             IComparer<Book> numberOfPagesComparer = new BookEqualityByNumberOfPages();
             anotherBookListService.SortBooksByTag(numberOfPagesComparer);
-            foreach (Book temp in anotherBookListService)
+            foreach (Book temp in anotherBookListService.GetBooks())
                 Console.WriteLine(temp.ToString() + "\n");
 
             //Extracting books with the tag specified in TagContainer(title="дон")
@@ -68,7 +69,7 @@ namespace Task1.UI
 
             BookListService tempService = anotherBookListService.FindBookByTag(tagContainer);
 
-             foreach (var temp in tempService)
+             foreach (var temp in tempService.GetBooks())
                 Console.WriteLine(temp.ToString() + "\n");
 
             //Extracting books with the tag specified in TagContainer(language="рус")
@@ -77,7 +78,17 @@ namespace Task1.UI
 
             tempService = anotherBookListService.FindBookByTag(tagContainer);
 
-            foreach (var temp in tempService)
+            foreach (var temp in tempService.GetBooks())
+                Console.WriteLine(temp.ToString() + "\n");
+
+
+            //Extracting books with the tag specified in TagContainer(language="рус")
+            Console.WriteLine("****************BooksThatContainGivenLanguage****************");
+            
+            tempService = anotherBookListService.FindBookByTag(book=>book.Language.Contains("рус"));
+
+
+            foreach (var temp in tempService.GetBooks())
                 Console.WriteLine(temp.ToString() + "\n");
             
             Console.ReadLine();

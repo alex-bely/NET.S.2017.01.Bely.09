@@ -195,8 +195,7 @@ namespace Task1
             int hashCode = 0;
             unchecked
             {
-                hashCode = Title.GetHashCode() + Author.GetHashCode() + Genre.GetHashCode() +
-                    NumberOfPages.GetHashCode() + Language.GetHashCode() + Country.GetHashCode();
+                hashCode = Title.GetHashCode()*1 + Author.GetHashCode()*2 + Country.GetHashCode()*3;
             }
             return hashCode;
         }

@@ -11,7 +11,7 @@ namespace Task1
     /// <summary>
     /// Provides working with lists of books
     /// </summary>
-    public class BookListService : IEnumerable<Book>
+    public class BookListService
     {
         #region Private members
         /// <summary>
@@ -22,7 +22,7 @@ namespace Task1
         /// <summary>
         /// List that contains Book objects
         /// </summary>
-        private List<Book> BookList;
+        private List<Book> bookList;
         #endregion
 
 
@@ -36,42 +36,44 @@ namespace Task1
         {
             get
             {
-                if (index > BookList.Count - 1 || index < 0)
+                if (index > bookList.Count - 1 || index < 0)
                 {
                     logger.Error($"ArgumentOutOfRangeException: {index} is out of range");
                     throw new ArgumentOutOfRangeException("Index is out of range");
                 }
-                return BookList[index];
+                return bookList[index];
             }
         }
 
-        #region Enumerators
-        /// <summary>
-        /// Returns an enumerator that iterates through a collection
-        /// </summary>
-        /// <returns>An IEnumerator object that can be used to iterate through the collection</returns>
-        public IEnumerator<Book> GetEnumerator()
-        {
-            return ((IEnumerable<Book>)BookList).GetEnumerator();
-        }
-
-        /// <summary>
-        /// Returns an enumerator that iterates through a collection
-        /// </summary>
-        /// <returns>An IEnumerator object that can be used to iterate through the collection</returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable<Book>)BookList).GetEnumerator();
-        }
-        #endregion
-
+        
         /// <summary>
         /// Creates new instance of the service
         /// </summary>
         public BookListService()
         {
-            BookList = new List<Book>();
+            bookList = new List<Book>();
         }
+
+        /// <summary>
+        /// Creates new instance of the service
+        /// </summary>
+        /// <param name="temp">Base BookListService instance</param>
+        public BookListService(BookListService temp)
+        {
+            bookList = new List<Book>(temp.bookList);
+        }
+
+        /// <summary>
+        /// Returns books of the booklistservice in array structure
+        /// </summary>
+        /// <returns>Array of books</returns>
+        public Array GetBooks()
+        {
+            if(ReferenceEquals(bookList,null)) return new Book[] { };
+            return bookList.ToArray();
+        }
+
+
 
         /// <summary>
         /// Adds book to the list
@@ -82,8 +84,8 @@ namespace Task1
         public void AddBook(Book book)
         {
             if (ReferenceEquals(book, null)) throw new ArgumentNullException("Book is null referenced");
-            if (BookList.Contains(book)) throw new ArgumentException("List already contains the book");
-            BookList.Add(book);
+            if (bookList.Contains(book)) throw new ArgumentException("List already contains the book");
+            bookList.Add(book);
             logger.Info($"Added book: {book.Title}");
         }
 
@@ -96,7 +98,7 @@ namespace Task1
         public void RemoveBook(Book book)
         {
             if (ReferenceEquals(book, null)) throw new ArgumentNullException("Book is null referenced");
-            if (!BookList.Remove(book)) throw new ArgumentException("List does not contain the book");
+            if (!bookList.Remove(book)) throw new ArgumentException("List does not contain the book");
             logger.Info($"Deleted book: {book.Title}");
         }
 
@@ -106,19 +108,35 @@ namespace Task1
         /// <param name="tag">Object that contains a rule of comparing</param>
         public void SortBooksByTag(IComparer<Book> tag)
         {
-            BookList.Sort(tag);
+            if (ReferenceEquals(tag, null))
+                throw new ArgumentNullException();
+            bookList.Sort(tag);
+        }
+
+
+        /// <summary>
+        /// Sorts books in List accorting to tag
+        /// </summary>
+        /// <param name="tag">Object that contains a rule of comparing</param>
+        public void SortBooksByTag(Comparison<Book> tag)
+        {
+            if (ReferenceEquals(tag, null))
+                throw new ArgumentNullException();
+            bookList.Sort(tag);
         }
 
         /// <summary>
-        /// Find books according to tag
+        /// Finds books according to tag
         /// </summary>
         /// <param name="tag">Object that contains a rule of searching</param>
-        /// <returns>New <see cref="BookListService"/> object</returns>
+        /// <returns>New <see cref="BookListService"/> object with specified books</returns>
         public BookListService FindBookByTag(ITagContainer tag)
         {
+            if (ReferenceEquals(tag, null))
+                throw new ArgumentNullException();
             BookListService temp = new BookListService();
 
-            foreach (var t in BookList)
+            foreach (var t in bookList)
             {
                 if (tag.Contain(t)) temp.AddBook(t);
             }
@@ -127,12 +145,33 @@ namespace Task1
         }
 
         /// <summary>
+        /// Finds books according to tag
+        /// </summary>
+        /// <param name="tag">Object that contains a rule of searching</param>
+        /// <returns>New <see cref="BookListService"/> object with specified books</returns>
+        public BookListService FindBookByTag(Predicate<Book> tag)
+        {
+            if (ReferenceEquals(tag, null))
+                throw new ArgumentNullException();
+            BookListService temp = new BookListService();
+
+            foreach (var t in bookList)
+            {
+                if (tag(t)) temp.AddBook(t);
+            }
+
+            return temp;
+        }
+
+       
+
+        /// <summary>
         /// Saves current BookListService to given storage
         /// </summary>
         /// <param name="storage">Storage to save</param>
         public void Save(IBookStorage storage)
         {
-            storage.SaveBookList(BookList, logger);
+            storage.SaveBookList(bookList, logger);
         }
 
         /// <summary>

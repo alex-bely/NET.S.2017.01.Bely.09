@@ -73,7 +73,7 @@ namespace Task1.UI
         /// </summary>
         /// <param name="bookList">List of books for saving</param>
         /// <param name="logger">Reference to logger</param>
-        public void SaveBookList(List<Book> bookList, Logger logger)
+        public void SaveBookList(IEnumerable<Book> bookList, Logger logger)
         {
             this.logger = LogManager.GetLogger(logger.Name);
             try
