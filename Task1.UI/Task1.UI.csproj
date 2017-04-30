@@ -47,7 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookListSerializedStorage.cs" />
     <Compile Include="BookListStorage.cs" />
+    <Compile Include="BookListXMLStorage.cs" />
     <Compile Include="NLogAdapter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
