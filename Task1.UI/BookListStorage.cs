@@ -10,12 +10,12 @@ using System.IO;
 namespace Task1.UI
 {
     /// <summary>
-    /// Provides loading and saving <see cref="BookListService"/> from/to file
+    /// Provides loading and saving <see cref="BookListService"/> from/to binary file
     /// </summary>
     class BookListStorage : IBookStorage
     {
         #region Private members
-        Logger logger;
+        ILogger logger;
         private string FilePath { get; }
         #endregion
 
@@ -33,9 +33,11 @@ namespace Task1.UI
         /// </summary>
         /// <param name="logger">Reference to logger</param>
         /// <returns>List of loaded books</returns>        
-        public List<Book> LoadBookList(Logger logger)
+        public List<Book> LoadBookList(ILogger logger)
         {
-            this.logger = LogManager.GetLogger(logger.Name);
+            if (ReferenceEquals(logger, null))
+                throw new ArgumentNullException($"{nameof(logger)} is null.");
+            this.logger = logger;
             List<Book> list = new List<Book>();
             try
             {
@@ -51,18 +53,16 @@ namespace Task1.UI
                         string Country = binaryReader.ReadString();
                         list.Add(new Book(Title, Author, Genre, NumberOfPages, Language, Country));
                     }
-                    logger.Info("File is Loaded");
+                    logger.Info("BookList is loaded");
                 }
             }
             catch (System.IO.FileNotFoundException ex)
             {
                 logger.Error(ex.Message);
-                logger.Trace(ex);
             }
             catch (System.IO.IOException ex)
             {
                 logger.Error(ex.Message);
-                logger.Trace(ex);
             }
 
             return list;
@@ -73,9 +73,11 @@ namespace Task1.UI
         /// </summary>
         /// <param name="bookList">List of books for saving</param>
         /// <param name="logger">Reference to logger</param>
-        public void SaveBookList(IEnumerable<Book> bookList, Logger logger)
+        public void SaveBookList(IEnumerable<Book> bookList, ILogger logger)
         {
-            this.logger = LogManager.GetLogger(logger.Name);
+            if (ReferenceEquals(logger, null))
+                throw new ArgumentNullException($"{nameof(logger)} is null.");
+            this.logger = logger;
             try
             {
                 using (BinaryWriter binaryWriter = new BinaryWriter(File.Open(FilePath, FileMode.Create)))
@@ -89,18 +91,16 @@ namespace Task1.UI
                         binaryWriter.Write(book.Language);
                         binaryWriter.Write(book.Country);
                     }
-                    logger.Info("File is saved");
+                    logger.Info("BookList is saved");
                 }
             }
             catch (System.ArgumentNullException ex)
             {
                 logger.Error(ex.Message);
-                logger.Trace(ex);
             }
             catch (System.IO.IOException ex)
             {
                 logger.Error(ex.Message);
-                logger.Trace(ex);
             }
         }
     }

@@ -10,6 +10,8 @@ namespace Task1.UI
     {
         static void Main(string[] args)
         {
+            ILogger logger = new NLogAdapter();
+
             //Creating books
             Book book1 = new Book("Война и мир", "Лев Толстой", "роман-эпопея", 1408, "русский", "Россия");
             Book book2 = new Book("Преступление и наказание", "Федор Достоевский", "роман", 608, "русский", "Россия");
@@ -20,8 +22,10 @@ namespace Task1.UI
             Book book7 = new Book("Тихий дон", "Михаил Шолохов", "роман-эпопея", 1230, "английский", "Россия");
 
             //Creating blank BookListServices
-            BookListService bookListService = new BookListService();
-            BookListService anotherBookListService = new BookListService();
+            BookListService bookListService = new BookListService(logger);
+            BookListService anotherBookListService = new BookListService(logger);
+            BookListService bookListServiceFromBS = new BookListService(logger);
+            BookListService bookListServiceFromXML = new BookListService(logger);
 
             //Filling in first BookListService
             bookListService.AddBook(book1);
@@ -37,6 +41,27 @@ namespace Task1.UI
             Console.WriteLine(bookListService[1].ToString());
             bookListService.RemoveBook(bookListService[1]);
 
+            Console.WriteLine("****************Work with BookListSerializedStorage****************");
+            //Creating BookListSerializedStorage with specified name
+            BookListSerializedStorage bookListSerializedStorage = new BookListSerializedStorage("LibraryBS.dat");
+            //Saving the BookListService to the BookListSerializedStorage
+            bookListService.Save(bookListSerializedStorage);
+            //Loading books from BookListSerializedStorage to another BookListService and displaying the books
+            bookListServiceFromBS.Load(bookListSerializedStorage);
+            foreach (Book temp in bookListServiceFromBS.GetBooks())
+                Console.WriteLine(temp.ToString() + "\n");
+
+            Console.WriteLine("****************Work with BookListXMLStorage****************");
+            // Creating BookListXMLStorage with specified name
+            BookListXMLStorage bookListXMLStorage = new BookListXMLStorage("LibraryXML.xml");
+            //Saving the BookListService to the BookListXMLStorage
+            bookListService.Save(bookListXMLStorage);
+            //Loading books from BookListXMLStorage to another BookListService and displaying the books
+            bookListServiceFromXML.Load(bookListXMLStorage);
+            foreach (Book temp in bookListServiceFromXML.GetBooks())
+                Console.WriteLine(temp.ToString() + "\n");
+
+            Console.WriteLine("****************Work with BookListStorage****************");
             //Creating BookListStorage with specified name
             BookListStorage bookListStorage = new BookListStorage("Library.dat");
             //Saving the BookListService to the BookListStorage

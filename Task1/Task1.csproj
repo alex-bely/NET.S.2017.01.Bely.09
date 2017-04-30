@@ -45,8 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Book.cs" />
+    <Compile Include="BookListSerializedStorage.cs" />
     <Compile Include="BookListService.cs" />
+    <Compile Include="BookListXMLStorage.cs" />
     <Compile Include="IBookStorage.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="ITagContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

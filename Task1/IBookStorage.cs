@@ -12,7 +12,7 @@ namespace Task1
     /// </summary>
     public interface IBookStorage
     {
-        List<Book> LoadBookList(NLog.Logger logger);
-        void SaveBookList(IEnumerable<Book> bookList, NLog.Logger logger);
+        List<Book> LoadBookList(ILogger logger);
+        void SaveBookList(IEnumerable<Book> bookList, ILogger logger);
     }
 }

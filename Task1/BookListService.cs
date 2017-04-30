@@ -15,10 +15,10 @@ namespace Task1
     {
         #region Private members
         /// <summary>
-        /// Object of Logger for current class
+        /// Logger
         /// </summary>
-        private Logger logger = LogManager.GetCurrentClassLogger();
-
+        private readonly ILogger logger;
+        
         /// <summary>
         /// List that contains Book objects
         /// </summary>
@@ -49,8 +49,11 @@ namespace Task1
         /// <summary>
         /// Creates new instance of the service
         /// </summary>
-        public BookListService()
+        public BookListService(ILogger logger)
         {
+            if (ReferenceEquals(logger, null))
+                throw new ArgumentNullException($"{nameof(logger)} is null.");
+            this.logger = logger;
             bookList = new List<Book>();
         }
 
@@ -58,8 +61,11 @@ namespace Task1
         /// Creates new instance of the service
         /// </summary>
         /// <param name="temp">Base BookListService instance</param>
-        public BookListService(BookListService temp)
+        public BookListService(BookListService temp, ILogger logger)
         {
+            if (ReferenceEquals(logger, null))
+                throw new ArgumentNullException($"{nameof(logger)} is null.");
+            this.logger = logger;
             bookList = new List<Book>(temp.bookList);
         }
 
@@ -134,7 +140,7 @@ namespace Task1
         {
             if (ReferenceEquals(tag, null))
                 throw new ArgumentNullException();
-            BookListService temp = new BookListService();
+            BookListService temp = new BookListService(this.logger);
 
             foreach (var t in bookList)
             {
@@ -153,7 +159,7 @@ namespace Task1
         {
             if (ReferenceEquals(tag, null))
                 throw new ArgumentNullException();
-            BookListService temp = new BookListService();
+            BookListService temp = new BookListService(this.logger);
 
             foreach (var t in bookList)
             {
@@ -162,8 +168,6 @@ namespace Task1
 
             return temp;
         }
-
-       
 
         /// <summary>
         /// Saves current BookListService to given storage

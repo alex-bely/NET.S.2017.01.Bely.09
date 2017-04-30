@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Task1
 {
     /// <summary>
     /// Represents book
     /// </summary>
+    [Serializable]
     public class Book : IComparable<Book>, IComparable, IEquatable<Book>
     {
         #region Private members
@@ -23,6 +25,7 @@ namespace Task1
         private string country;
         #endregion
 
+       
         #region Properties
         /// <summary>
         /// Property for title of the book
@@ -208,14 +211,7 @@ namespace Task1
         {
             return $"Title: {Title}\nAuthor: {Author}\nGenre: {Genre} \nNumber of pages: {NumberOfPages}\nLanguage: {Language} \nCountry: {Country}";
         }
-
-
-        /// <summary>
-        /// Works like Equals.
-        /// </summary>
-        /// <param name="left"> Book type object for comparing. </param>
-        /// <param name="right"> Book type object for comparing. </param>
-        /// <returns> Boolean value indicates equality of the parameters.</returns>
+        
 
         /// <summary>
         /// Compares two books
